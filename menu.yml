@@ -1,0 +1,17 @@
+menu:
+  - title: Dashboard Utama
+    icon: 🏠
+    module: views.home
+    function: show
+  - title: Laporan Personel
+    icon: 🙎🏻‍♂️
+    module: views.personel
+    function: show
+  - title: Analisis Notifikasi
+    icon: 📈
+    module: views.analisis
+    function: show
+  - title: Detail Data
+    icon: 📋
+    module: views.detail_data
+    function: show
