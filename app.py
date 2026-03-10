@@ -3,7 +3,7 @@ import yaml
 import importlib
 from utils.theme import apply_theme
 
-# =====================
+# ===================== #
 # CONFIG & STYLE
 # =====================
 st.set_page_config(
