@@ -125,7 +125,46 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value=${{ steps.vars.outputs.version }}
 
-      - name: Build and push image
+      - name: Build image (local, pre-scan)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: ${{ steps.vars.outputs.image_ref }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Trivy image scan (SARIF)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: image
+          image-ref: ${{ steps.vars.outputs.image_ref }}
+          format: sarif
+          output: trivy-image-results.sarif
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: HIGH,CRITICAL
+          exit-code: "0"
+
+      - name: Upload Trivy image SARIF to GitHub Security
+        if: ${{ always() && hashFiles('trivy-image-results.sarif') != '' }}
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: trivy-image-results.sarif
+          category: trivy-image
+
+      - name: Trivy image scan gate (HIGH/CRITICAL)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: image
+          image-ref: ${{ steps.vars.outputs.image_ref }}
+          format: table
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+
+      - name: Push image
         uses: docker/build-push-action@v6
         with:
           context: .
