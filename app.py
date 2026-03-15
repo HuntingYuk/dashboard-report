@@ -3,6 +3,12 @@ import yaml
 import importlib
 from utils.theme import apply_theme
 
+try:
+    with open("VERSION", "r", encoding="utf-8") as f:
+        APP_VERSION = f.read().strip() or "unknown"
+except FileNotFoundError:
+    APP_VERSION = "unknown"
+
 # ===================== #
 # CONFIG & STYLE
 # =====================
@@ -48,9 +54,9 @@ selected_menu = st.sidebar.radio(
 st.sidebar.divider()
 st.sidebar.markdown("### ℹ️ Info")
 st.sidebar.info(
-    """
-    **Versi 1.1**
-    
+    f"""
+    **Versi {APP_VERSION}**
+
     Dashboard ini menggunakan data 
     real-time dari Google Sheets.
     """
@@ -70,3 +76,6 @@ if selected_menu:
     # Get the function and call it
     func = getattr(module, func_name)
     func()
+
+st.markdown("---")
+st.caption(f"Dashboard Version: {APP_VERSION}")
