@@ -13,7 +13,7 @@ WORKDIR /app
 RUN groupadd --system app && useradd --system --gid app --create-home app
 
 COPY requirements.txt ./
-RUN python -m pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install --requirement requirements.txt
 
 COPY . .
 RUN chown -R app:app /app
