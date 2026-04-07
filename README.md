@@ -10,17 +10,16 @@
 - **📊 Personnel Analysis**: Track *Person In Charge* (PIC) performance with monthly trend charts and task distribution.
 - **📈 Threat Analysis**: Visual breakdown of stakeholder notifications, impacted sectors, and incident categories (IIV/Non-IIV).
 - **📝 Detailed Data**: Interactive table for exploring raw data with CSV export functionality.
-- **🎨 Modern UI**: Responsive interface featuring *Dark Mode*, interactive charts (Plotly), and menu-based navigation.
+- **🎨 Modern UI**: Responsive interface featuring interactive charts (Plotly) and multi-page navigation.
 
 ---
 
 ## 🛠️ Tech Stack
 
 - **[Python](https://www.python.org/)**: Primary programming language.
-- **[Streamlit](https://streamlit.io/)**: Framework for building interactive data apps.
+- **[Streamlit](https://streamlit.io/)**: Framework for building interactive data apps (native multi-page).
 - **[Pandas](https://pandas.pydata.org/)**: Data manipulation and analysis.
 - **[Plotly](https://plotly.com/)**: Interactive graphing library.
-- **[PyYAML](https://pyyaml.org/)**: Dynamic navigation configuration.
 
 ---
 
@@ -57,14 +56,7 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4. Environment Configuration
-Copy the `.env.example` file to `.env` and configure your CSV URL.
-```bash
-cp .env.example .env
-```
-> **Note:** Ensure `CSV_URL` in the `.env` file points to a valid Google Sheets CSV link (Published to Web).
-
-### 5. Run Application
+### 4. Run Application
 ```bash
 streamlit run app.py
 ```
@@ -76,17 +68,16 @@ The application will automatically open in your browser at `http://localhost:850
 
 ```
 📦 si-threat
- ┣ 📂 views/            # View logic per page
- ┃ ┣ 📜 home.py         # Main dashboard
- ┃ ┣ 📜 personel.py     # Personnel performance analysis
- ┃ ┣ 📜 analisis.py     # Stakeholder & sector analysis
- ┃ ┗ 📜 detail_data.py  # Raw data table
- ┣ 📂 utils/            # Helper functions (loader, theme)
- ┣ 📜 app.py            # Main entry point (Routing & Layout)
- ┣ 📜 menu.yml          # Navigation menu configuration
- ┣ 📜 .env              # Environment Configuration (URL, Secrets)
- ┣ 📜 requirements.txt  # Python dependencies list
- ┗ 📜 README.md         # Project documentation
+ ┣ 📂 pages/              # Streamlit multi-page views
+ ┃ ┣ 📜 0_Home.py         # Main dashboard
+ ┃ ┣ 📜 1_Personel.py     # Personnel performance analysis
+ ┃ ┣ 📜 2_Analisis.py     # Stakeholder & sector analysis
+ ┃ ┗ 📜 3_Detail_Data.py  # Raw data table
+ ┣ 📂 utils/              # Helper functions (loader, theme)
+ ┣ 📜 app.py              # Main entry point (navigation)
+ ┣ 📜 sidebar.py          # Global sidebar with filters
+ ┣ 📜 requirements.txt    # Python dependencies list
+ ┗ 📜 README.md           # Project documentation
 ```
 
 ---
