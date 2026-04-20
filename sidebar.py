@@ -25,6 +25,10 @@ def render_sidebar():
     st.session_state["pic"] = pic
 
     st.sidebar.markdown("---")
+    if st.sidebar.button("🔄 Refresh Data"):
+        st.cache_data.clear()
+        st.rerun()
+
     st.sidebar.markdown(
         f"""
     <style>
