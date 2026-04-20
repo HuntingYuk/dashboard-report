@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import re
+from utils.loader import load_data, URUTAN_BULAN
 
 # =====================
 # AMBIL FILTER GLOBAL DARI SIDEBAR
@@ -72,35 +73,11 @@ st.markdown("""
 # =====================
 # LOAD DATA
 # =====================
-CSV_URL = (
-    "https://docs.google.com/spreadsheets/d/e/"
-    "2PACX-1vQeydV3v3dnBOuyyp6O8Zu-BKx-2B4W73L7xV4bCt-YU4EAYv6fkSIlgVTpjMYwCA"
-    "/pub?gid=1002955304&single=true&output=csv"
-)
-
-@st.cache_data
-def load_data():
-    df = pd.read_csv(CSV_URL)
-    df.columns = df.columns.str.strip()
-    df["TANGGAL"] = df["TANGGAL"].astype(str).str.capitalize()
-    df["JENIS LAPORAN"] = df["JENIS LAPORAN"].astype(str).str.strip()
-    df["STATUS"] = df["STATUS"].astype(str)
-    return df
-
 df = load_data()
-
-# =====================
-# DEFINISI URUTAN BULAN
-# =====================
-urutan_bulan = [
-    "Januari", "Februari", "Maret", "April",
-    "Mei", "Juni", "Juli", "Agustus",
-    "September", "Oktober", "November", "Desember"
-]
 
 df["TANGGAL"] = pd.Categorical(
     df["TANGGAL"],
-    categories=urutan_bulan,
+    categories=URUTAN_BULAN,
     ordered=True
 )
 
@@ -127,7 +104,6 @@ if bulan:
 if pic:
     df = df[df["PIC_SPLIT"].isin(pic)]
 
-# Kembalikan ke data unik setelah explode
 df = df.drop(columns=["PIC_SPLIT"]).drop_duplicates()
 
 # =====================

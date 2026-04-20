@@ -1,7 +1,7 @@
 import streamlit as st
-from utils.loader import load_data
 import pandas as pd
 import re
+from utils.loader import load_data, URUTAN_BULAN
 
 st.title("📋 DETAIL DATA LAPORAN")
 
@@ -16,57 +16,36 @@ df = load_data()
 bulan = st.session_state.get("bulan", [])
 pic = st.session_state.get("pic", [])
 
-# =====================
-# DEFINISI URUTAN BULAN
-# =====================
-urutan_bulan = [
-    "Januari", "Februari", "Maret", "April",
-    "Mei", "Juni", "Juli", "Agustus",
-    "September", "Oktober", "November", "Desember"
-]
-
 df["TANGGAL"] = pd.Categorical(
     df["TANGGAL"],
-    categories=urutan_bulan,
+    categories=URUTAN_BULAN,
     ordered=True
 )
 
 # =====================
-# NORMALISASI PIC (AGAR BISA FILTER MULTI PIC)
+# NORMALISASI PIC (PAKAI KOLOM TERPISAH AGAR NAMA PIC ASLI TETAP)
 # =====================
-def normalisasi_pic(df):
-    df = df.copy()
+df["PIC_SPLIT"] = (
+    df["NAMA PIC"]
+    .astype(str)
+    .str.lower()
+    .apply(lambda x: re.split(r"[;,/]", x))
+)
 
-    df["NAMA PIC_SPLIT"] = (
-        df["NAMA PIC"]
-        .astype(str)
-        .str.lower()
-        .apply(lambda x: re.split(r"[;,/]", x))
-    )
-
-    df = df.explode("NAMA PIC_SPLIT")
-    df["NAMA PIC_SPLIT"] = df["NAMA PIC_SPLIT"].str.strip()
-    df = df[df["NAMA PIC_SPLIT"] != ""]
-
-    return df
-
-df_pic = normalisasi_pic(df)
+df = df.explode("PIC_SPLIT")
+df["PIC_SPLIT"] = df["PIC_SPLIT"].str.strip()
+df = df[df["PIC_SPLIT"] != ""]
 
 # =====================
 # FILTER DATA
 # =====================
-df_f = df_pic.copy()
-
 if bulan:
-    df_f = df_f[df_f["TANGGAL"].isin(bulan)]
+    df = df[df["TANGGAL"].isin(bulan)]
 
 if pic:
-    df_f = df_f[df_f["NAMA PIC_SPLIT"].isin(pic)]
+    df = df[df["PIC_SPLIT"].isin(pic)]
 
-# =====================
-# KEMBALIKAN KE FORMAT AWAL (HAPUS DUPLIKAT SETELAH EXPLODE)
-# =====================
-df_final = df_f.drop(columns=["NAMA PIC_SPLIT"]).drop_duplicates()
+df_final = df.drop(columns=["PIC_SPLIT"]).drop_duplicates()
 
 # =====================
 # TAMPILKAN DATA

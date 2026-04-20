@@ -1,8 +1,7 @@
 import streamlit as st
 import plotly.express as px
-from utils.loader import load_data
 import pandas as pd
-import re
+from utils.loader import load_data, normalisasi_pic, URUTAN_BULAN
 
 # =====================
 # LOAD DATA
@@ -15,39 +14,11 @@ df = load_data()
 bulan = st.session_state.get("bulan", [])
 pic = st.session_state.get("pic", [])
 
-# =====================
-# DEFINISI URUTAN BULAN
-# =====================
-urutan_bulan = [
-    "Januari", "Februari", "Maret", "April",
-    "Mei", "Juni", "Juli", "Agustus",
-    "September", "Oktober", "November", "Desember"
-]
-
 df["TANGGAL"] = pd.Categorical(
     df["TANGGAL"],
-    categories=urutan_bulan,
+    categories=URUTAN_BULAN,
     ordered=True
 )
-
-# =====================
-# NORMALISASI PIC (SAMA SEPERTI PAGE PERSONEL)
-# =====================
-def normalisasi_pic(df):
-    df = df.copy()
-
-    df["NAMA PIC"] = (
-        df["NAMA PIC"]
-        .astype(str)
-        .str.lower()
-        .apply(lambda x: re.split(r"[;,/]", x))
-    )
-
-    df = df.explode("NAMA PIC")
-    df["NAMA PIC"] = df["NAMA PIC"].str.strip()
-    df = df[df["NAMA PIC"] != ""]
-
-    return df
 
 df_pic = normalisasi_pic(df)
 
