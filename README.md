@@ -56,7 +56,14 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4. Run Application
+### 4. Environment Configuration
+Copy `.env.example` to `.env` and set your CSV URL.
+```bash
+cp .env.example .env
+```
+> Ensure `CSV_URL` points to a valid Google Sheets CSV link (Published to Web). For k8s deployment, inject `CSV_URL` via Secret.
+
+### 5. Run Application
 ```bash
 streamlit run app.py
 ```

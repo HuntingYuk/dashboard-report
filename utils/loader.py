@@ -1,18 +1,20 @@
+import os
 import streamlit as st
 import pandas as pd
 import re
+from dotenv import load_dotenv
 
-CSV_URL = (
-    "https://docs.google.com/spreadsheets/d/e/"
-    "2PACX-1vQeydV3v3dnBOuyyp6O8Zu-BKx-2B4W73L7xV4bCt-YU4EAYv6fkSIlgVTpjMYwCA"
-    "/pub?gid=1002955304&single=true&output=csv"
-)
+load_dotenv()
+
+CSV_URL = os.getenv("CSV_URL")
 
 @pd.api.extensions.register_dataframe_accessor("clean")
 def _(_): pass  # dummy agar editor tidak error (opsional)
 
 @st.cache_data(ttl=300)
 def load_data():
+    if not CSV_URL:
+        raise RuntimeError("CSV_URL environment variable is not set. Set it in .env (local) or via secret (k8s).")
     df = pd.read_csv(CSV_URL)
     df.columns = df.columns.str.strip()
     df["TANGGAL"] = df["TANGGAL"].astype(str).str.strip().str.capitalize()
