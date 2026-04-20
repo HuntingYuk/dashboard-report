@@ -10,7 +10,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-RUN groupadd --system app && useradd --system --gid app --create-home app
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/* && \
+    groupadd --system app && useradd --system --gid app --create-home app
 
 COPY requirements.txt ./
 RUN pip install --requirement requirements.txt
